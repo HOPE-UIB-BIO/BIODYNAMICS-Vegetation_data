@@ -1,13 +1,13 @@
 #----------------------------------------------------------#
 #
 #
-#                       Project name
+#                   Vegetation data
 #
-#                       Master file
-#                 
+#                    Master file
 #
-#                         Names 
-#                         Year
+#
+#                      O. Mottl
+#                         2023
 #
 #----------------------------------------------------------#
 
@@ -33,10 +33,3 @@ source("R/01_Data_processing/Run_01.R")
 source("R/02_Main_analyses/Run_02.R")
 
 source("R/03_Supplementary_analyses/Run_03.R")
-
-
-
-
-
-
-

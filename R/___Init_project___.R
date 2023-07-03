@@ -1,13 +1,13 @@
 #----------------------------------------------------------#
 #
 #
-#                     Project name
+#                   Vegetation data
 #
-#                     Project setup
-#                 
+#                    Project setup
 #
-#   O. Mottl, S. Flantua, K. Bhatta, V. Felde, A. Seddon 
-#                         2021
+#
+#                      O. Mottl
+#                         2023
 #
 #----------------------------------------------------------#
 
@@ -34,7 +34,7 @@ renv::deactivate()
 # Step 3: Create a list of packages
 #----------------------------------------------------------#
 
-package_list <- 
+package_list <-
   c(
     "assertthat",
     "devtools",
@@ -43,24 +43,24 @@ package_list <-
     "janitor",
     "jsonlite",
     "languageserver",
-    "renv",       
-    "roxygen2",   
-    "tidyverse",  
-    "usethis"   
+    "remotes",
+    "renv",
+    "roxygen2",
+    "tidyverse",
+    "usethis"
   )
 
 # define helper function
 install_packages <-
   function(pkgs_list) {
-
     # install all packages in the lst from CRAN
     sapply(pkgs_list, utils::install.packages, character.only = TRUE)
 
     # install RFossilpol from GitHub
-    # devtools::install_github(
-    #  "HOPE-UIB-BIO/R-Fossilpol-package",
-    #  quiet = FALSE,
-    #  upgrade = FALSE
+    devtools::install_github(
+      "HOPE-UIB-BIO/R-Utilpol-package",
+      quiet = FALSE,
+      upgrade = FALSE
     )
   }
 
@@ -86,36 +86,16 @@ install_packages(package_list)
 
 
 #----------------------------------------------------------#
-# Step 7: Synchronize package versions with the project 
+# Step 7: Synchronize package versions with the project
 #----------------------------------------------------------#
 
 library(here)
 
 # if there is no lock file present make a new snapshot
-if
-(
+if (
   isFALSE("library_list.lock" %in% list.files(here::here("renv")))
 ) {
   renv::snapshot(lockfile = here::here("renv/library_list.lock"))
 } else {
   renv::restore(lockfile = here::here("renv/library_list.lock"))
 }
-
-#----------------------------------------------------------#
-# Step 8: GitHub hook
-#----------------------------------------------------------#
-
-# Prevent commiting to the Main
-usethis::use_git_hook(
-  hook = "pre-commit",
-  script = '#!/bin/sh
-  branch="$(git rev-parse --abbrev-ref HEAD)"
-  if [ "$branch" = "main" ]; then
-  echo "You cannot commit directly to main branch. Please make a new branch"
-  exit 1
-  fi'
-)
-
-#----------------------------------------------------------#
-# Step 9: Run the project 
-#----------------------------------------------------------#
