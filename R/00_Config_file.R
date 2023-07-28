@@ -37,6 +37,7 @@ if (already_synch == FALSE) {
 package_list <-
   c(
     "assertthat",
+    "BIEN",
     "devtools",
     "here",
     "renv",
