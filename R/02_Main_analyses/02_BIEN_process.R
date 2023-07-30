@@ -36,6 +36,7 @@ data_bien_files <-
   purrr::map(
     .f = ~ RUtilpol::get_clean_name(.x)
   ) %>%
+  unique() %>%
   rlang::set_names() %>%
   purrr::map(
     .f = ~ RUtilpol::get_latest_file(
@@ -66,14 +67,42 @@ data_bien_raw <-
   ) %>%
   # merge the files
   dplyr::bind_rows(
-    .id = "method"
+    .id = "datasource"
   ) %>%
   tibble::as_tibble()
 
+
+data_bien_raw  %>% 
+dplyr::slice(1:1e3)  %>% 
+names()
+
 data_bien <-
   data_bien_raw %>%
+  dplyr::select(
+    dplyr::any_of(
+      c(
+        "datasource",
+        "plot_name",
+        "sampling_protocol",
+        "methodology_reference",
+        "longitude",
+        "latitude",
+        "subplot",
+        "individual_count",
+        "family_matched",
+        "name_matched",
+        "name_matched_author",
+        "verbatim_family",
+        "verbatim_scientific_name",
+        "scrubbed_species_binomial",
+        "scrubbed_taxonomic_status",
+        "scrubbed_family",
+        "scrubbed_author"
+      )
+    )
+  )  %>% 
   dplyr::group_by(
-    method,
+    datasource,
     plot_name
   ) %>%
   tidyr::nest(
@@ -93,7 +122,6 @@ data_bien <-
   ) %>%
   dplyr::ungroup()
 
-
 #----------------------------------------------------------#
 # 4. Save  -----
 #----------------------------------------------------------#
@@ -102,5 +130,7 @@ RUtilpol::save_latest_file(
   object_to_save = data_bien,
   dir = here::here(
     "Data/Processed/BIEN"
-  )
+  ),
+  prefered_format = "qs",
+  preset = "archive"
 )
