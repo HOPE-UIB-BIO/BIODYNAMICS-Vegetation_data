@@ -44,11 +44,17 @@ data_bien <-
 
 dplyr::glimpse(data_bien)
 
-is.na(data_bien$longitude)  %>% 
-table()
+is.na(data_bien$longitude) %>%
+  table()
 
 fig_bien <-
   data_bien %>%
+  dplyr::mutate(
+    sampling_protocol_numeric = as.factor(sampling_protocol) %>%
+      as.numeric() %>%
+      as.character() %>%
+      paste0("method_", .)
+  ) %>%
   ggplot2::ggplot(
     mapping = ggplot2::aes(
       x = longitude,
@@ -61,10 +67,15 @@ fig_bien <-
   ) +
   # ggplot2::geom_point() +
   ggplot2::geom_hex(bins = 90) +
-  scale_fill_continuous(type = "viridis") +
+  ggplot2::scale_fill_continuous(
+    type = "viridis",
+     trans = "log1p",
+      breaks = c(0, 10, 100, 1e3, 1e6)) +
+  ggplot2::facet_wrap(~sampling_protocol_numeric) +
   ggplot2::coord_quickmap() +
   ggplot2::labs(
     title = "Spatial distribution of BIEN plot data",
+    subtitle = "Faceted by sampling protocol",
     x = "Longitude",
     y = "Latitude",
     fill = "Number of plots"
