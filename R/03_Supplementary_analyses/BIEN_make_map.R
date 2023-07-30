@@ -44,6 +44,9 @@ data_bien <-
 
 dplyr::glimpse(data_bien)
 
+is.na(data_bien$longitude)  %>% 
+table()
+
 fig_bien <-
   data_bien %>%
   ggplot2::ggplot(
@@ -67,10 +70,9 @@ fig_bien <-
     fill = "Number of plots"
   )
 
-
 ggplot2::ggsave(
   filename = here::here(
     "Outputs/Figures/BIEN_map.pdf"
   ),
-  plot = fig_splot
+  plot = fig_bien
 )
