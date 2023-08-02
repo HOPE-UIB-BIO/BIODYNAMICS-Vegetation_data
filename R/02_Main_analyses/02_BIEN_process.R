@@ -72,21 +72,24 @@ data_bien_raw <-
   tibble::as_tibble()
 
 
-data_bien_raw  %>% 
-dplyr::slice(1:1e3)  %>% 
-names()
+data_bien_raw %>%
+  dplyr::slice(1:1e3) %>%
+  names()
 
 data_bien <-
   data_bien_raw %>%
   dplyr::select(
     dplyr::any_of(
       c(
+        "datasource_id",
         "datasource",
         "plot_name",
         "sampling_protocol",
         "methodology_reference",
+        "methodology_description",
         "longitude",
         "latitude",
+        "plot_area_ha",
         "subplot",
         "individual_count",
         "family_matched",
@@ -100,7 +103,7 @@ data_bien <-
         "scrubbed_author"
       )
     )
-  )  %>% 
+  ) %>%
   dplyr::group_by(
     datasource,
     plot_name
@@ -121,6 +124,27 @@ data_bien <-
     )
   ) %>%
   dplyr::ungroup()
+
+# data check -----
+
+dplyr::glimpse(data_bien)
+
+data_bien %>%
+  dplyr::select(-plot_data) %>%
+  dplyr::mutate(
+    dplyr::across(
+      tidyselect::where(is.character),
+      as.factor
+    )
+  ) %>%
+  summary()
+
+# check the percentage of NAs in each column
+(data_bien %>%
+  dplyr::select(-plot_data) %>%
+  is.na() %>%
+  colSums() / nrow(data_bien)) * 100
+
 
 #----------------------------------------------------------#
 # 4. Save  -----
