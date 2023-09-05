@@ -3,7 +3,7 @@
 #
 #                   Vegetation data
 #
-#                  Get the BIEN data
+#                 Get the BIEN plot data
 #
 #
 #                      O. Mottl
@@ -39,7 +39,7 @@ vec_datasource <-
 # path to the directory
 sel_path <-
   here::here(
-    "Data/Input/BIEN"
+    "Data/Input/BIEN/Plot_data"
   )
 
 # download each sampling protocol and save it as individual file

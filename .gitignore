@@ -43,4 +43,4 @@ vignettes/*.pdf
 
 # Large files
 *.RData
-Data/Input/BIEN/*.rds
+Data/Input/BIEN/Plot_data/*.rds
