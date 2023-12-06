@@ -52,7 +52,7 @@ data_splot_subset <-
   janitor::clean_names()
 
 #----------------------------------------------------------#
-# 3. Proccess data  -----
+# 4. Save data  -----
 #----------------------------------------------------------#
 
 RUtilpol::save_latest_file(
