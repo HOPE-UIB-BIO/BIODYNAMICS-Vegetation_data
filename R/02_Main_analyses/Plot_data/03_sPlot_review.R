@@ -56,7 +56,23 @@ data_splot %>%
   ) +
   ggplot2::geom_point(alpha = 0.1) +
   ggplot2::geom_density2d() +
-  ggplot2::coord_quickmap()
+  ggplot2::coord_quickmap() +
+  ggplot2::theme(
+    text = ggplot2::element_text(
+      size = 25
+    )
+  ) +
+    ggplot2::labs(
+      title = "sPlotOpen plots with coordinates and plot size",
+      x = "Longitude",
+      y = "Latitude",
+      caption = paste(
+        "N datasets = ",
+        data_splot %>%
+          tidyr::drop_na(Longitude, Latitude, Releve_area) %>%
+          nrow()
+      )
+    )
 
 # select Europe and Oceania as potential splot datasets
 
@@ -136,6 +152,11 @@ plot_continental_data <- function(data_source, sel_continent) {
       xlim = range(data_work$Longitude),
       ylim = range(data_work$Latitude)
     ) +
+      ggplot2::theme(
+    text = ggplot2::element_text(
+      size = 25
+    )
+  ) +
     ggplot2::labs(
       title = sel_continent,
       x = "Longitude",
@@ -151,4 +172,12 @@ ggpubr::ggarrange(
   plot_continental_data(data_splot_same_size_to_plot, "Europe"),
   plot_continental_data(data_splot_same_size_to_plot, "Oceania"),
   widths = c(1, 0.75)
+)  %>% 
+ggpubr::annotate_figure(
+  top = ggpubr::text_grob(
+    "sPlot plots with most common plot size",
+    face = "bold",
+    size = 25,
+    hjust = 1
+  )
 )
