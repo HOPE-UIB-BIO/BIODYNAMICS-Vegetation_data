@@ -67,9 +67,8 @@ data_bien_raw <-
   ) %>%
   # merge the files
   dplyr::bind_rows() %>%
-  tibble::as_tibble()
-janitor::clean_names()
-
+  tibble::as_tibble() %>%
+  janitor::clean_names()
 
 data_bien_raw %>%
   dplyr::slice(1:1e3) %>%
@@ -83,38 +82,38 @@ data_bien <-
         "trait_name",
         "trait_value",
         "unit",
+        "id",
         "longitude",
         "latitude",
-        "family_matched",
-        "name_matched",
-        "name_matched_author",
-        "verbatim_family",
-        "verbatim_scientific_name",
+        "method",
+        "url_source",
+        "source_citation",
+        "project_pi",
         "scrubbed_species_binomial",
-        "scrubbed_taxonomic_status",
-        "scrubbed_family",
-        "scrubbed_author"
+        "access"
       )
     )
+  ) %>%
+  dplyr::mutate(
+    id = as.character(id),
+    trait_value = as.numeric(trait_value)
   ) %>%
   dplyr::group_by(
     trait_name
   ) %>%
   tidyr::nest(
     species_data = c(
+      id,
       scrubbed_species_binomial,
       trait_value,
       unit,
       longitude,
       latitude,
-      family_matched,
-      name_matched,
-      name_matched_author,
-      verbatim_family,
-      verbatim_scientific_name,
-      scrubbed_taxonomic_status,
-      scrubbed_family,
-      scrubbed_author
+      method,
+      url_source,
+      source_citation,
+      project_pi,
+      access,
     )
   ) %>%
   dplyr::ungroup()
@@ -146,24 +145,30 @@ data_bien_unnest %>%
 # 4. Save  -----
 #----------------------------------------------------------#
 
+total_rows <- nrow(data_bien_unnest)
+n_chunks <- 4
+chunk_size <- total_rows / n_chunks
 
-RUtilpol::save_latest_file(
-  object_to_save = data_bien,
-  file_name = "data_traits_bien",
-  dir = here::here(
-    "Data/Processed/BIEN"
-  ),
-  prefered_format = "qs",
-  preset = "archive"
-)
-
-
-RUtilpol::save_latest_file(
-  object_to_save = data_bien,
-  file_name = "data_traits_bien",
-  dir = here::here(
-    "Data/Processed/BIEN"
-  ),
-  prefered_format = "qs",
-  preset = "archive"
-)
+c(
+  0:(n_chunks - 1)
+) %>%
+  rlang::set_names() %>%
+  purrr::map(
+    .f = ~ as.integer((.x * chunk_size + 1):((.x + 1) * chunk_size))
+  ) %>%
+  purrr::iwalk(
+    .f = ~ data_bien_unnest %>%
+      dplyr::slice(.x) %>%
+      RUtilpol::save_latest_file(
+        object_to_save = .,
+        file_name = paste0(
+          "data_traits_bien_",
+          .y
+        ),
+        dir = here::here(
+          "Outputs/Data/"
+        ),
+        prefered_format = "qs",
+        preset = "archive"
+      )
+  )
