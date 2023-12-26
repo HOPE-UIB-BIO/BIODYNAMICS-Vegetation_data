@@ -24,7 +24,7 @@ source(
   )
 )
 
-download_de_novo <- FALSE
+download_de_novo <- TRUE
 
 #----------------------------------------------------------#
 # 2. Downloa data and save as individual files  -----
@@ -79,7 +79,8 @@ purrr::walk(
       data_download <-
         BIEN::BIEN_trait_trait(
           trait = sel_trait,
-          all.taxonomy = TRUE
+          all.taxonomy = FALSE,
+          source.citation = TRUE
         ) %>%
         tibble::as_tibble()
 
