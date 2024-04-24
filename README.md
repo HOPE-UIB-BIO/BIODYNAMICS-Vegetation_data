@@ -1,4 +1,4 @@
-# BIODYNAMICS: Vegetation data
+# VegVault: Vegetation data
 
 This is part of the [BIODYNAMICS project](https://ondrejmottl.github.io/projects/BIODYNAMICS/).
 
